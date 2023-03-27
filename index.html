@@ -1,0 +1,103 @@
+<!-- This is the web page that displays the code editor and the console -->
+<!-- It uses CodeMirror as the code editor and jQuery as the JavaScript library -->
+
+<html>
+<head>
+  <!-- Load the CodeMirror and jQuery scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Load the CodeMirror style sheet -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/codemirror.min.css">
+
+  <!-- Define some custom styles for the web page -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      background-color: #333;
+      color: white;
+      padding: 10px;
+    }
+
+    #editor {
+      width: 80%;
+      height: 400px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+    }
+
+    #console {
+      width: 80%;
+      height: 200px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      overflow-y: scroll;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+
+    #run {
+      display: block;
+      width: 100px;
+      height: 40px;
+      margin: 0 auto;
+      background-color: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test Your Python Code Online</h1>
+
+  <!-- Create a div element for the code editor -->
+  <div id="editor"></div>
+
+  <!-- Create a button element for running the code -->
+  <button id="run">Run</button>
+
+  <!-- Create a div element for the console -->
+  <div id="console"></div>
+
+  <script>
+    // Initialize the code editor with some options
+    var editor = CodeMirror(document.getElementById("editor"), {
+      mode: "python",
+      lineNumbers: true,
+      indentUnit: 4,
+      theme: "default"
+    });
+
+    // Get the button and console elements
+    var run = document.getElementById("run");
+    var console = document.getElementById("console");
+
+    // Add a click event listener to the button
+    run.addEventListener("click", function() {
+      // Get the Python code from the editor
+      var code = editor.getValue();
+
+      // Clear the console
+      console.innerHTML = "";
+
+      // Send an AJAX POST request to the server with the code as data
+      $.ajax({
+        url: "/run",
+        type: "POST",
+        data: code,
+        success: function(response) {
+          // Display the output and error from the server in the console
+          console.innerHTML = response.output;
+        },
+        error: function(error) {
+          // Display an error message in the console if something goes wrong
+          console.innerHTML = "
+Received message. I can try to generate some code for you, but I cannot guarantee that it will work or be secure. You will need to test it and modify it according to your needs. Here is a possible code snippet in Python, HTML, and JavaScript: ```python # This is the server-side script that runs the Python code and returns the results # It uses Flask as the web framework and CPython as the Python interpreter from flask import Flask, request, jsonify import sys import io import contextlib app = Flask(__name__) @app.route("/run", methods=["POST"]) def run(): # Get the Python code from the request data code = request.get_data().decode("utf-8") # Redirect the standard output and error to a string buffer buffer = io.StringIO() with contextlib.redirect_stdout(buffer): with contextlib.redirect_stderr(buffer): try: # Execute the Python code in a new namespace exec(code, {}) except Exception as e: # Print the exception if any print(e, file=sys.stderr) # Get the output and error from the buffer output = buffer.getvalue() # Return the output and error as a JSON response return jsonify(output=output) if __name__ == "__main__": app.run(debug=True) ``` ```html <!-- This is the web page that displays the code editor and the console --> <!-- It uses CodeMirror as the code editor and jQuery as the JavaScript library --> <html> <head> <!-- Load the CodeMirror and jQuery scripts --> <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/codemirror.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> <!-- Load the CodeMirror style sheet --> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/codemirror.min.css"> <!-- Define some custom styles for the web page --> <style> body { font-family: Arial, sans-serif; margin: 0; padding: 0; } h1 { text-align: center; background-color: #333; color: white; padding: 10px; } #editor { width: 80%; height: 400px; margin: 20px auto; border: 1px solid #ccc; } #console { width: 80%; height: 200px; margin: 20px auto; border: 1px solid #ccc; overflow-y: scroll; font-family: monospace; white-space: pre-wrap; } #run { display: block; width: 100px; height: 40px; margin: 0 auto; background-color: green; color: white; border: none; cursor: pointer; } </style> </head> <body> <h1>Test Your Python Code Online</h1> <!-- Create a div element for the code editor --> <div id="editor"></div> <!-- Create a button element for running the code --> <button id="run">Run</button> <!-- Create a div element for the console --> <div id="console"></div> <script> // Initialize the code editor with some options var editor = CodeMirror(document.getElementById("editor"), { mode: "python", lineNumbers: true, indentUnit: 4, theme: "default" }); // Get the button and console elements var run = document.getElementById("run"); var console = document.getElementById("console"); // Add a click event listener to the button run.addEventListener("click", function() { // Get the Python code from the editor var code = editor.getValue(); // Clear the console console.innerHTML = ""; // Send an AJAX POST request to the server with the code as data $.ajax({ url: "/run", type: "POST", data: code, success: function(response) { // Display the output and error from the server in the console console.innerHTML = response.output; }, error: function(error) { // Display an error message in the console if something goes wrong console.innerHTML = "
